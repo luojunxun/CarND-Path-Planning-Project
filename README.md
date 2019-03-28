@@ -1,16 +1,37 @@
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
    
-### Simulator.
-You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).  
-
-To run the simulator on Mac/Linux, first make the binary file executable with the following command:
-```shell
-sudo chmod u+x {simulator_file_name}
-```
-
 ### Goals
-In this project your goal is to safely navigate around a virtual highway with other traffic that is driving +-10 MPH of the 50 MPH speed limit. You will be provided the car's localization and sensor fusion data, there is also a sparse map list of waypoints around the highway. The car should try to go as close as possible to the 50 MPH speed limit, which means passing slower traffic when possible, note that other cars will try to change lanes too. The car should avoid hitting other cars at all cost as well as driving inside of the marked road lanes at all times, unless going from one lane to another. The car should be able to make one complete loop around the 6946m highway. Since the car is trying to go 50 MPH, it should take a little over 5 minutes to complete 1 loop. Also the car should not experience total acceleration over 10 m/s^2 and jerk that is greater than 10 m/s^3.
+In this project the goal is to safely navigate around a virtual highway with other traffic that is driving +-10 MPH of the 50 MPH speed limit. You will be provided the car's localization and sensor fusion data, there is also a sparse map list of waypoints around the highway. The car should try to go as close as possible to the 50 MPH speed limit, which means passing slower traffic when possible, note that other cars will try to change lanes too. The car should avoid hitting other cars at all cost as well as driving inside of the marked road lanes at all times, unless going from one lane to another. The car should be able to make one complete loop around the 6946m highway. Since the car is trying to go 50 MPH, it should take a little over 5 minutes to complete 1 loop. Also the car should not experience total acceleration over 10 m/s^2 and jerk that is greater than 10 m/s^3.
+
+### Result
+Please read the video in the folder 'video'.
+
+The car drives according to the speed limit In order to achieve this, the algorithm discards trajectories that are going to exceed the speed limit in the future, so it picks a trajectory with less acceleration or overall speed.
+
+Max Acceleration and Jerk are not Exceeded The acceleration increments implemented by the behavior model were designed carefully so that neither the acceleration nor the jerk are exceeded of 10 m/s^2 and 10 m/s^3 respectively.
+
+Car does not have collisions. One of the most important cost functions implemented in the trajectory generation algorithm is TrajectoryCost::DetectCollision(). This function iterates over the candidate trajectory predicting the future state of the road for each step. Internally, to detect collisions I designed an algorithm that simplifies each vehicle to an ellipse, so it is easier and faster to calculate.
+
+The car stays in its lane, except for the time between changing lanes. This is one of the hardest points to achieve, because there are times when several trajectories have almost the same cost so it loops between CHANGE LANE and KEEP LANE states. When that happens, the ego vehicle ends up going straight in the line that divides lanes. In order to overcome this problem I added a functionality to allow the ego vehicle to complete the CHANGE LANE state if it has decided to start it (bypassing the possibility to KEEP LANE). This way if it decides to change lanes, it won't stop till it is in the next lane, unless a new vehicle appears and the change suddenly becomes risky.
+
+The car is able to change lanes as you can see in the video that the ego vehicle changes lanes very well when there is a vehicle in front of him going slower and there is no traffic in the next lane
+
+### Implementation
+The project consists of the following main components:
+    - Road
+    - Prediction
+    - Behavior
+    - Path planner
+    - Trajectory generation
+    - Vehicle
+    - Map
+    
+The simulator sends sensor data of the ego vehicle and the surrounding environment. The road is modeled with the kinematic state of each vehicle sensed and predict how this is going to change in the near future using a kinematic model. Based on that, the behavior model loops over several goal points and generates trajectories. For each trajectory, it calculates a cost, which represents how safe it is (including max-jerk penalization, max-speed, collision detection, etc). The best one is sent back to the simulator. Most of the core logic is coded in the method Behavior::UpdateState(), in the file behavior.cpp
+
+A series of waypoints are also provided which allow as to create a global map of the road.
+
+Each waypoint in the list contains [x,y,s,dx,dy] values. x and y are the waypoint's map coordinate position, the s value is the distance along the road to get to that waypoint in meters, the dx and dy values define the unit normal vector pointing outward of the highway loop. 
 
 #### The map of the highway is in data/highway_map.txt
 Each waypoint in the list contains  [x,y,s,dx,dy] values. x and y are the waypoint's map coordinate position, the s value is the distance along the road to get to that waypoint in meters, the dx and dy values define the unit normal vector pointing outward of the highway loop.
