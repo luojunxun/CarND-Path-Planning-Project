@@ -19,13 +19,13 @@ The car is able to change lanes as you can see in the video that the ego vehicle
 
 ### Implementation
 The project consists of the following main components:
-    - Road
-    - Prediction
-    - Behavior
-    - Path planner
-    - Trajectory generation
-    - Vehicle
-    - Map
+- Road
+- Prediction
+- Behavior
+- Path planner
+- Trajectory generation
+- Vehicle
+- Map
     
 The simulator sends sensor data of the ego vehicle and the surrounding environment. The road is modeled with the kinematic state of each vehicle sensed and predict how this is going to change in the near future using a kinematic model. Based on that, the behavior model loops over several goal points and generates trajectories. For each trajectory, it calculates a cost, which represents how safe it is (including max-jerk penalization, max-speed, collision detection, etc). The best one is sent back to the simulator. Most of the core logic is coded in the method Behavior::UpdateState(), in the file behavior.cpp
 
