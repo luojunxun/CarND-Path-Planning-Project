@@ -7,7 +7,20 @@ add_definitions(-std=c++11)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
-set(sources src/main.cpp)
+set(sources src/main.cpp
+            src/behavior.cpp
+            src/map.cpp
+            src/path_planner.cpp
+            src/point.cpp
+            src/road.cpp
+            src/spline.cpp
+            src/spline_strategy.cpp
+            src/straight_line_strategy.cpp
+            src/walkthrough_strategy.cpp
+            src/trajectory.cpp
+            src/trajectory_cost.cpp
+            src/utils.cpp
+            src/vehicle.cpp)
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
