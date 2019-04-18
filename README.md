@@ -20,17 +20,20 @@ The car is able to change lanes as you can see in the video that the ego vehicle
 ### Implementation
 The project consists of the following main components:
 - Prediction 
+
 It contains the predictions for the surrounding obstacles, located in vehicle.cpp.
 The inputs of this function are the sensor fusion for surroundings, the localization data of the ego vehicle and the previous path. The outpus are the ID, position (Fernet coordinates), and flags which indicate if the obstacles exist or not.
 It scan the inputs from the sensor fusion, trying to find the closest surrounding vehicles for front and rear in all lanes.
 
 - Behavior Planning
+
 It contains the finite state machine including 4 states: Lane Keep, Prepare Lane Change Left, Prepare Lane Change Right, Change Lane, located in vehicle.cpp.
 The inputs of this function are the current state in the finite state machine, current lane where the ego car is. The outpus are the next state and the lane where the ego car should be.
 When the speed of the ego car is larger than the front car, it will try to lower down the speed to avoid collision. When the speed is below the reference speed (around 50 mph) and there is no detected front car, it will try to accelerate in order to reach the max speed limit.
 Some timers (counters) have been set up in order to control the time staying in the PLCL/PLCR states.
 
 - Trajectory Generation
+
 It contains reading waypoint map data, coordinate transformation, generate trajectory and smooth trajectory, located in trajectory_generator.cpp.
 The inputs of this function are the current lane from the finite state machine and the previous path. The outpus is the generated trajectory.
 It uses the current and previous ego car position or the left-over waypoints from the previous path returned by the simulator. It also uses 3 more control points that are cp_inc ahead of the last path waypoint. These 5 points determine the spline input. It then use the spline function to smooth out the trajectory in order to obey the acceleration and jert constraints.
